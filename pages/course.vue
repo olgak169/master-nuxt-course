@@ -1,12 +1,13 @@
 <template>
-  <div class="p-12 bg-gray-100 w-full h-full min-h-screen flex flex-col">
+  <main>
     <div class="prose mb-12">
       <h1>
         <span class="font-medium">
           Course:
-          <span class="font-bold">Mastering Nuxt</span>
+          <span class="font-bold">{{ title }}</span>
         </span>
       </h1>
+      <UserCard />
     </div>
 
     <div class="flex flex-row justify-center flex-grow">
@@ -37,12 +38,33 @@
       </div>
 
       <div class="prose p-12 bg-white rounded-md w-[65ch]">
-        <NuxtPage />
+        <NuxtErrorBoundary>
+          <NuxtPage />
+          <template #error="{ error }">
+            <p>Something is wrong...</p>
+            <code>{{ error }}</code>
+            <button
+              class="hover:cursor-pointer bg-gray-500 text-white font-bold py-1 px-3 rounded"
+              @click="resetError(error)"
+            >
+              Reset
+            </button>
+          </template>
+        </NuxtErrorBoundary>
       </div>
     </div>
-  </div>
+  </main>
 </template>
 
 <script setup>
-  const { chapters } = useCourse()
+  const { chapters, title } = useCourse()
+  // const firstLesson = await useFirstLesson()
+
+  const resetError = async error => {
+    await navigateTo(
+      '/course/chapter/1-chapter-1/lesson/1-introduction-to-typescript-with-vue-js-3'
+    )
+    // await navigateTo(firstLesson.path);
+    error.value = null
+  }
 </script>
